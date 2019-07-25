@@ -1,0 +1,40 @@
+---
+title: "흡연 과거력과 ACS 종류와의 상관관계"
+subtitle: "서울아산병원 임상약리학과 2019 동계 서브인턴"
+author: "신영하"
+date: "2019-01-15"
+header-includes:
+  - \usepackage{kotex}
+mainfont: NanumGothic
+output:
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
+```
+
+[Rmarkdown 링크](http://rpubs.com/drshin93/458361)
+
+## 서론
+이 분석에서는 857명의 acute coronary syndrome 환자에서 흡연 과거력과 ACS type 간에 상관관계가 있는지 알아보려고 합니다.
+
+## 방법
+moonBook::acs와 R을 사용하여 분석하였다.
+
+## 결과
+유의한 차이가 있었다.
+
+```{r}
+library(ggplot2)
+library(readxl)
+library(dplyr)
+library(moonBook)
+
+raw_acs <- moonBook::acs
+ggplot(data = raw_acs) + geom_bar(mapping = aes(x = Dx)) + facet_wrap(~ smoking)
+```
+
+## 결론
+유의한 차이가 있는 것처럼 보이지만 더 자세한 분석이 필요하다.

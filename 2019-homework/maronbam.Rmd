@@ -1,0 +1,65 @@
+---
+title: "Smoking 여부에 따른 ACS 발병 연령의 차이"
+subtitle: "서울아산병원 임상약리학과 2019 동계 서브인턴"
+author: "박정빈"
+date: "2019-01-15"
+header-includes:
+  - \usepackage{kotex}
+mainfont: NanumGothic
+output:
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
+```
+
+## 서론
+
+(current) Smoker는 과거에 100개피 이상의 흡연력이 있고, 최근 28일 이내에 흡연한 적이 있는 사람으로 정의한다. 그리고 Ex-smoker는 과거에 100개피 이상의 흡연력이 있고, 최근 28이내에 흡연한 적이 없는 사람을 칭한다. Non-smoker는 과거에 100개피 이하의 흡연력이 있으며 최근의 흡연력이 없는 사람이다.
+
+이 분석에서는 857명의 acute coronary syndrome 환자에서 현재 혹은 과거의 smoking status가 ACS의 발병 연령에 어떤 영향을 미치는지를 보고자 한다.
+
+## 방법
+
+`moonBook::acs` 자료를 사용하였다. R 3.5.2로 자료 정리 및 통계 분석 등을 수행하였다. 
+
+## 결과
+
+Non-smoker, Ex-smoker, Smoker 중 smoker의 ACS 발병 연령이 낮은 것으로 나타났다.
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+raw_acs <- read_excel('acs.xlsx') %>% 
+  mutate(age = as.numeric(age))
+
+raw_acs %>% 
+  group_by(smoking) %>% 
+  summarise(median_age = median(age, na.rm = TRUE),
+            sd_age = sd(age, na.rm = TRUE))
+```
+
+```{r}
+qplot(x = smoking, y = age, data = raw_acs, geom = 'boxplot')
+```
+
+ACS을 구성하는 Unstable angina, NSTEMI, STEMI 중에서는 NSTEMI의 발병 연령이 smoker에서 유의하게 낮게 나타났다.  
+
+```{r}
+raw_acs %>% 
+  mutate(age = as.numeric(BMI)) %>% 
+  group_by(Dx, smoking) %>% 
+  summarise(median_age = median(age, na.rm = TRUE),
+            sd_age = sd(age, na.rm = TRUE))
+```
+
+```{r}
+qplot(x = smoking, y = age, data = raw_acs, geom = 'boxplot', facets = . ~ Dx)
+```
+
+## 결론
+
+흡연력은 ACS의 발병 연령, 특히 NSTEMI의 발병 연령에 영향을 미친다.

@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup}
+library(tidyverse)
+library(PKPDdatasets) # devtools::install_github('dpastoor/PKPDdatasets') 
+library(NonCompart)
+```
+
+# One-compartment pharmacokinetic data given single oral dose (N=50)
+
+## Description
+
+A dataset containing dose, plasma concentration and time data, as well as demographic data of Age, Weight, Gender, and Race for each individual
+
+## Format
+A data frame with 4300 rows and 9 variables
+
+## Details
+- ID. Numerical ID (1–50)
+- Time. Time in hours (0–24)
+- Amt. Amount of drug given, time dependent, in milligrams
+- Conc. Plasma concentration in mg/L 
+- Age. Age in years 
+- Weight. Weight in kg 
+- Gender. Male or Female gender identification 
+- Race. Ethnicity 
+- Dose. Dose given to each individual in milligrams
+
+```{r}
+data_raw <- PKPDdatasets::sd_oral_richpk %>% 
+  as_tibble() %>% 
+  print()
+```
+
+```{r}
+data_raw %>% 
+  ggplot(aes(Time, Conc, group = ID, color = Weight)) +
+  geom_line() +
+  geom_point() +
+  facet_grid(rows = vars(Gender), cols = vars(Race)) +
+  theme_bw() +
+  labs(title = 'Oral administration', 
+       x='Time (h)',
+       y='Concentration (mg/L)')
+```
+
+```{r noncompartmental}
+tblNCA(as.data.frame(data_raw),
+       key = 'ID',
+       'Time',
+       'Conc')
+```
+
+
+
+
+

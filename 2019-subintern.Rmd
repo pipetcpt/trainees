@@ -1,0 +1,93 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+
+환영합니다.
+
+2019년 서브인턴 일정을 아래처럼 댓글로 기록해 주십시오. 2-3일 주기로 업데이트 하면 좋을 것 같습니다.
+
+---
+
+# CSF Immunoglobulin 패턴과 다발성 경화증 중증도와의 상관관계
+
+**한성필**, 김자윤, 서인석, 신영하, 박정빈, 이소희 성윤수
+
+## 초록
+CSF Immunoglobulin 패턴과 다발성 경화증 중증도와의 상관관계는 높지 않다. (r=0.2, p=0.47)
+
+## 서론
+CSF Immunoglobulin 패턴과 다발성 경화증 중증도와의 상관관계에 대해서 많은 의견이 있으나 한국인에서 잘 알려지지 않았다.
+
+## Materials and Methods
+~~d어쩌고~~~
+
+## 결과
+
+
+- CSF Immunoglobulin 패턴과 다발성 경화증 중증도는 크지 않다.
+- CSF Immunoglobulin 패턴은 크게 ~가지로 나뉠 수 있다.
+- 다발성 경화증의 중증도는 ~~였다.
+
+1. CSF Immunoglobulin 패턴과 다발성 경화증 중증도는 크지 않다.
+2. CSF Immunoglobulin 패턴은 크게 ~가지로 나뉠 수 있다.
+3. 다발성 경화증의 중증도는 ~~였다.
+
+---
+
+3. CSF Immunoglobulin 패턴과 다발성 경화증 중증도는 크지 않다.
+1. 다발성 경화증의 중증도는 ~~였다.
+2. CSF Immunoglobulin 패턴은 크게 ~가지로 나뉠 수 있다.
+
+## Discussion
+
+
+
+| 이름 | 메뉴 | 학년 |
+|---|--:|---|
+|한성필|카페라떼|0|
+|김자윤|카페라떼|2|
+|서인석|아이스아메리카노|2|
+|신영하|카페라떼|3|
+|박정빈|아이스라떼|3|
+|이소희|녹차라떼|2|
+|성윤수|아이스모카|3|
+
+
+
+## Figures
+
+```{r, echo = FALSE, message = FALSE, warning=FALSE}
+library(ggplot2)
+qplot(data = mpg, x = drv, y = hwy, geom = "boxplot", colour = drv)
+```
+
+Figure 1. Boxplot of drv and hwy.
+
+
+
+![Figure 2. CSF Immunoglobulin](https://jamanetwork.com/data/journals/neur/24176/noc110088f1.jpeg)
+
+
+![Figure 3. Kitty](kitty.png)
+
+## Tables
+
+```{r}
+knitr::kable(head(Theoph, 20), caption = "Table 1. Overview of Theoph dataset")
+```
+
+```{r}
+library(moonBook)
+library(tidyverse)
+
+acs %>% 
+  group_by(Dx, smoking) %>% 
+  summarise(HDLC_mean = median(HDLC, na.rm = TRUE),
+            LDLC_mean = median(LDLC, na.rm = TRUE),
+            TC_mean = median(TC, na.rm = TRUE)) %>% 
+  arrange(HDLC_mean) %>% 
+  knitr::kable(caption = "Table 2. Smoking and cardiovascular disease")
+```

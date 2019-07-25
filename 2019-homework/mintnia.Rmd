@@ -1,0 +1,63 @@
+# Acute Coronary Syndrome 환자에서 혈중 Triglyceride 농도와 당뇨병과의 상관관계
+
+
+## 서론
+
+이 분석에서는 857명의 acute coronary syndrome(ACS) 환자에서 혈중 Triglyceride(TG) 농도와 당뇨병 여부의 상관관계를 알아보고자 한다.
+
+## 방법
+
+`moonBook::acs` 자료를 사용하였다.
+
+## 결과
+
+유의미한 차이를 찾을 수 없었다.
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(moonBook)
+
+#setwd("C:/Users/Sohee/Documents/R/Directories")
+
+raw_acs <- read_excel("acs.xlsx") %>% 
+  mutate(TG = as.numeric(TG))
+
+raw_acs %>% 
+  group_by(DM) %>% 
+  summarise(median_TG = median(TG, na.rm = TRUE),
+            sd_TG = sd(TG, na.rm = TRUE))
+
+qplot(x = DM, y = TG, data = raw_acs, geom = 'boxplot')
+
+raw_acs %>% 
+  mutate(TG = as.numeric(TG)) %>% 
+  group_by(Dx, sex, DM) %>% 
+  summarise(median_TG = median(TG, na.rm = TRUE),
+            sd_TG = sd(TG, na.rm = TRUE))
+
+qplot(x = DM, y = TG, data = raw_acs, geom = 'boxplot', facets = sex ~ Dx)
+```
+
+```{r}
+qplot(x = DM, y = TG, data = raw_acs, geom = 'boxplot')
+```
+
+성별과 진단을 고려해도 유의미한 차이는 없었다. 
+
+```{r}
+raw_acs %>% 
+  mutate(TG = as.numeric(TG)) %>% 
+  group_by(Dx, sex, DM) %>% 
+  summarise(median_TG = median(TG, na.rm = TRUE),
+            sd_TG = sd(TG, na.rm = TRUE))
+```
+
+```{r}
+qplot(x = DM, y = TG, data = raw_acs, geom = 'boxplot', facets = sex ~ Dx)
+```
+
+## 결론
+
+ACS환자에서 TG를 비롯한 진단, 성별 등은 당뇨병 유무와 유의미한 상관관계를 가지지 않았다.
+

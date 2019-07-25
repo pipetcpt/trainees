@@ -1,0 +1,73 @@
+---
+title: "Rmarkdown Report"
+author: "AMC Subinterns"
+date: "2016-08-11"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(knitr)
+library(tidyverse)
+
+# setwd("D:/Subintern/WNL")
+```
+
+## 2016 Summer
+
+- 서브인턴 어지안, 이종희 선생님
+- 한성필 작성
+
+```{r}
+PKRaw <- read.csv("data-raw/assay/Drug_X_PK.csv", stringsAsFactors = FALSE)
+
+DosePK <- PKRaw %>% 
+  select(ID, DV, GENE, Drug, TIME) %>% 
+  group_by(ID) %>% 
+  mutate(RankDV = min_rank(desc(DV))) %>% 
+  filter(RankDV == 1) %>% 
+  select(ID, Tmax = TIME, Cmax = DV, GENE, Drug) %>% 
+  group_by(Drug) %>% 
+  summarise(Tmax.Median = median(Tmax), Cmax.Mean = mean(Cmax))
+
+# -> this result will be used to draw plot.
+
+kable(DosePK)
+```
+
+위 표는 Dose에 따른 T~max~와 C~max~를 정리한 것입니다.
+
+$$
+\mathbf{V}_1 \times \mathbf{V}_2 =  \begin{vmatrix}
+\mathbf{i} & \mathbf{j} & \mathbf{k} \\
+\frac{\partial X}{\partial u} &  \frac{\partial Y}{\partial u} & 0 \\
+\frac{\partial X}{\partial v} &  \frac{\partial Y}{\partial v} & 0
+\end{vmatrix}  
+$$
+
+
+## 그림 그리기
+
+지금부터는 위에서 작업한 자료를 이용하여 그림을 그려보겠습니다.
+
+```{r}
+TidyDosePK <- gather(DosePK, key = PARAMETER, VALUE, Tmax.Median:Cmax.Mean)
+
+ggplot(TidyDosePK, aes(x = Drug, y = VALUE, color = PARAMETER)) +
+  geom_point() +
+  geom_line()
+```
+
+용량이 증가할 때 C~max~의 평균은 증가하며, T~max~ 중앙값은 큰 변화가 없는 것을 알 수 있습니다.
+
+```{r}
+TidyPK <- 
+  read.csv("data-raw/wnl/Xproject_Final Parameters Pivoted.csv") %>% 
+  gather(WNLPARAMTER, WNLVALUE, -ID)
+
+ggplot(TidyPK, aes(x = ID, y = WNLVALUE, color = WNLPARAMTER)) +
+  geom_point() +
+  geom_line()
+```

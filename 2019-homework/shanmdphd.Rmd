@@ -1,0 +1,56 @@
+---
+title: "BMI에 따른 Primary coronary intervention 시 entry 경로의 결정"
+author: "한성필"
+header-includes:
+  - \usepackage{kotex}
+mainfont: NanumGothic
+output:
+  pdf_document:
+    latex_engine: xelatex
+---
+
+## 서론
+
+이 분석에서는 857명의 acute coronary syndrome 환자에서 primary coronary intervention 시 entry 경로의 결정이 BMI에 따라 영향을 받는지 알아보고자 한다.
+
+## 방법
+
+`moonBook::acs` 자료를 사용하였다.
+
+## 결과
+
+큰 차이가 없었다.
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+raw_acs <- read_excel('acs.xlsx') %>% 
+  mutate(BMI = as.numeric(BMI))
+
+raw_acs %>% 
+  group_by(entry) %>% 
+  summarise(median_BMI = median(BMI, na.rm = TRUE),
+            sd_BMI = sd(BMI, na.rm = TRUE))
+```
+
+```{r}
+qplot(x = entry, y = BMI, data = raw_acs, geom = 'boxplot')
+```
+
+성별과 진단을 고려해도 눈에 띄는 차이는 없었다. 
+
+```{r}
+raw_acs %>% 
+  group_by(Dx, sex, entry) %>% 
+  summarise(median_BMI = median(BMI, na.rm = TRUE),
+            sd_BMI = sd(BMI, na.rm = TRUE))
+```
+```{r}
+qplot(x = entry, y = BMI, data = raw_acs, geom = 'boxplot', facets = sex ~ Dx)
+```
+
+## 결론
+
+BMI를 비롯하여 진단, 성별 등은 영향을 PCI의 진입 경로에 영향을 미치지 않았다.
+

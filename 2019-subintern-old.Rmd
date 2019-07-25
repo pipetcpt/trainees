@@ -1,0 +1,88 @@
+---
+title: "How to use R markdown"
+author: "AMC Subintern"
+date: '2017-08-02'
+output:
+  html_document:
+    toc: yes
+  word_document:
+    toc: yes
+bibliography: references/myref.bib
+---
+
+# Introduction
+
+이것은 R 마크다운입니다.
+
+```{r}
+# install.packages('tidyverse')
+library(tidyverse)
+```
+
+# Materials and Methods
+
+Theoph의 앞부분입니다.
+
+```{r}
+head(Theoph)
+```
+
+Theoph의 뒷부분입니다.
+
+```{r}
+tail(Theoph)
+```
+
+# Results
+
+그림을 그려볼까요
+
+```{r}
+plotTheoph <- Theoph %>% 
+  ggplot(aes(x = Time, y = conc, group = Subject, color = Subject)) +
+  geom_point() +
+  geom_line()
+plotTheoph
+```
+
+Let's draw individually.
+
+```{r}
+plotTheoph +
+  facet_wrap( ~ Subject, ncol = 4)
+```
+
+Theoph is used for treating asthma and the other allergic diseases. [@subintern1]
+
+Omalizumab is also used for treating asthma [@maltby2017omalizumab]
+
+# Discussion
+
+Writing medical papers can be done by Rmarkdown as well as using [Endnote](http://endnote.com/), Mendeley <https://www.mendeley.com/>, refworks, and zotero.
+
+| 이름 | 메뉴 | 가격 |
+| :-- | :-- | --: |
+| 조하혜 | 카페라떼 | 3500원 |
+| 한성필 | 녹차라떼 | 4000원 |
+| 배균섭 | 케이크 | 14000원 |
+| 임형석 | 아이스아메리카노 | 3000원 |
+| 조은민 | 코카콜라 | 1500원 |
+
+So now we learned several things.
+
+- R
+- R packages - tidyverse, ggplot2
+- Drawing figures by R
+- Rmarkdown
+
+Next time we will learn these
+
+1. How to use basic NCA R package 
+1. How to use Phoenix WinNonLin software
+1. How to become successful clinical investigator
+
+[Online Figure](http://www.radiokorea.com/images/news/2017/02/17/251890/1.gif)
+
+![Online Figure](http://www.radiokorea.com/images/news/2017/02/17/251890/1.gif)
+
+# Reference
