@@ -1,4 +1,19 @@
-# Acute Coronary Syndrome 환자에서 혈중 Triglyceride 농도와 당뇨병과의 상관관계
+---
+title: "Acute Coronary Syndrome 환자에서 혈중 Triglyceride 농도와 당뇨병과의 상관관계"
+author: "김마리"
+date: "2019-07-30"
+header-includes:
+  - \usepackage{kotex}
+mainfont: NanumGothic
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document: default
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
 
 
 ## 서론

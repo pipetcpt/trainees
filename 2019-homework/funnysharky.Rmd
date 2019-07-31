@@ -1,11 +1,18 @@
 ---
 title: "키와 흡연의 상관관계"
-output: html_document
 author: "윤창일"
+date: "2019-07-30"
+header-includes:
+  - \usepackage{kotex}
+mainfont: NanumGothic
+output:
+  pdf_document:
+    latex_engine: xelatex
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 ## 서론
@@ -25,7 +32,7 @@ library(tidyverse)
 library(scales)
 library(dplyr)
 
-setwd("C:/Users/cmc/Desktop/intern assignment/스트레스와 흡연율의 관계를 통한 키와 스트레스의 상관관계")
+#setwd("C:/Users/cmc/Desktop/intern assignment/스트레스와 흡연율의 관계를 통한 키와 스트레스의 상관관계")
 acs <- read_excel("acs.xlsx")
 
 tacs<- acs %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
@@ -41,8 +48,6 @@ sggplot <- ggplot(data=sacs)+geom_bar(mapping=aes(x=smoking))
 labs(title="Smoking of short people")
 sggplot
 ```
-
-
 
 키가 큰 집단에서 흡연율이 높게 나타났다.
 
