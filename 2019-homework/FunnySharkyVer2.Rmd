@@ -1,0 +1,196 @@
+---
+title: "키와 흡연의 상관관계"
+output:
+  pdf_document: null
+  word_document: default
+latex_engine: xelatex
+html_notebook: default
+html_document: default
+mainfont: NanumGothic
+author: "윤창일"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 서론
+이 분석에서는 심장병을 앓고 있는 환자군에서 키와 흡연의 상관관계를 살펴본다. 키에서 오는 사회적 심리적 요인이 개인으로 하여금 흡연을 하도록 만드는지, 그것이 다시 심장병으로 연결되는지에 대한 개략적인 분석이다. 그 외에도 BMI와 흡연의 관계, 비만-키-나이 의 관계를 3차원적으로 살펴본다.
+
+## 방법
+키와 흡연 : 비척도와 순위척도 > boxplot
+BMI와 흡연 : 비척도와 순위척도 > boxplot
+키와 BMI : 비척도와 비척도 > scatterplot
+키-BMI-나이 : 비척도 > scatter 3D
+TC-TG-HDLC-LDLC-BMI : 비척도 > plotfaces
+
+
+
+plotfaces
+TC : styling of hair
+TG : width of faces
+HDLC : width of eyes
+LDLC : furve of smile
+BMI : width of mouth
+
+
+
+
+```{r}
+library(ggplot2)
+library(readxl)
+library(tidyverse)
+library(scales)
+library(dplyr)
+library(tinytex)
+library(plot3D)
+library(DescTools)
+
+setwd("C:/Users/cmc/Desktop/intern assignment/스트레스와 흡연율의 관계를 통한 키와 스트레스의 상관관계")
+acs <- read.csv("C:/Users/cmc/Desktop/intern assignment/acs.csv")
+
+
+##whole data height distribution wtout NA
+acs.hcleanse<- acs %>% drop_na(height)
+
+ggplot(data=acs.hcleanse)+geom_bar(mapping=aes(x=height))
+macs<- acs.hcleanse %>% filter((sex=="Male"))
+facs<- acs.hcleanse %>% filter((sex=="Female"))
+
+
+##남녀로 구분한 키의 boxplot
+hmeans<-aggregate(height ~ sex, acs.hcleanse, mean)
+
+ggplot(data=acs.hcleanse)+geom_boxplot(aes(y=height , x=sex, fill=sex))+stat_summary(aes(sex,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = hmeans, aes(x=sex, label = height,  y = height - 1.2))
+
+##남녀로 구분한 BMI의 boxplot
+acs.BMIcleanse<- acs %>% drop_na(BMI)
+Bmeans<-aggregate(BMI ~ sex, acs.BMIcleanse, mean)
+
+ggplot(data=acs.BMIcleanse)+geom_boxplot(mapping=aes(y=BMI , x=sex, fill=sex))+stat_summary(aes(sex,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = Bmeans, aes(x=sex, label = BMI,  y = BMI - 1.2))
+
+
+
+##본격 분석그래프 작성
+##divided data height distribution
+tacs<- acs.hcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sacs<- acs.hcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+##Never, Ex-smoker 순서 바꿔서 boxplot 그리기
+tacs$smoking2<-factor(tacs$smoking,levels=levels(tacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+sacs$smoking2<-factor(sacs$smoking,levels=levels(sacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+
+levels(tacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(sacs$smoking)<-c("Ex-smoker","Never","Smoker")
+
+thmeans<-aggregate(height ~ smoking2, tacs, mean)
+shmeans<-aggregate(height ~ smoking2, sacs, mean)
+
+ggplot(data=tacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = thmeans, aes(x=smoking2, label = height,  y = height - 1.2)) 
+ggplot(data=sacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = shmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+##이성간에 차이가 있는 것은 아닐까해서 성별로 나눈 비교
+macs$smoking2<-factor(macs$smoking,levels=levels(macs$smoking)<-c("Never","Ex-smoker","Smoker"))
+facs$smoking2<-factor(facs$smoking,levels=levels(facs$smoking)<-c("Never","Ex-smoker","Smoker"))
+mmeans<-aggregate(height ~ smoking2, macs, mean)
+fmeans<-aggregate(height ~ smoking2, facs, mean)
+
+ggplot(data=macs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = mmeans, aes(x=smoking2, label = height,  y = height - 1.2)) 
+ggplot(data=facs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = fmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+
+
+
+##BMI로 boxplot 그리기
+tBmeans<-aggregate(BMI ~ smoking2, tacs, mean)
+sBmeans<-aggregate(BMI ~ smoking2, sacs, mean)
+
+ggplot(data=tacs)+geom_boxplot(mapping=aes(x=smoking2,y=BMI, fill=smoking2)) +stat_summary(aes(smoking2,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = tBmeans, aes(x=smoking2, label = BMI,  y = BMI - 1.2))
+ggplot(data=facs)+geom_boxplot(mapping=aes(x=smoking2,y=BMI, fill=smoking2))+stat_summary(aes(smoking2,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = sBmeans, aes(x=smoking2, label = BMI,  y = BMI - 1.2))
+
+
+
+
+
+
+
+##point와 smooth를 활용하여 키-BMI 그래프 그리기
+ggplot(data=macs, aes(BMI, height))+geom_point()+geom_smooth(method="auto")
+
+ggplot(data=facs, aes(BMI, height))+geom_point()+geom_smooth(method="auto")
+
+
+
+
+##scatter3D()를 활용해서 키 나이 BMI 를 비교한 그래프를 그리기
+##scatter3D(data=acs.cleanse, "age", "BMI", "height")
+acs.allcleanse<- acs %>% drop_na()
+
+scatter3D(x=acs.allcleanse$age, y=acs.allcleanse$BMI, z=acs.allcleanse$height, xlab="age",ylab="BMI",zlab="height")
+
+##hist3D()를 활용해서 그리기
+x_breaks <- seq(min(acs.allcleanse$age), max(acs.allcleanse$age), length.out = 100)
+y_breaks <- seq(min(acs.allcleanse$BMI), max(acs.allcleanse$BMI), length.out = 100)
+x_values <- 0.5*(x_breaks[-1]+x_breaks[-length(x_breaks)])
+y_values <- 0.5*(y_breaks[-1]+y_breaks[-length(y_breaks)])
+z_values <- table(cut(acs.allcleanse$age, x_breaks), cut(acs.allcleanse$BMI, y_breaks))
+
+hist3D(x=x_values, y=y_values, z=z_values, xlab="age",ylab="BMI",zlab="height", bty="g", ticktype="detailed", d=3)
+
+
+
+
+##멋있는 그래프로 마무리 plotfaces()
+##1)데이터 정제
+acs.TCcleanse<- acs %>% drop_na(TC)
+mTC<- acs.TCcleanse %>% filter((sex=="Male"))
+fTC<- acs.TCcleanse %>% filter((sex=="Female"))
+tTC<- acs.TCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sTC<- acs.TCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.TGcleanse<- acs %>% drop_na(TG)
+mTG<- acs.TGcleanse %>% filter((sex=="Male"))
+fTG<- acs.TGcleanse %>% filter((sex=="Female"))
+tTG<- acs.TGcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sTG<- acs.TGcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.HDLCcleanse<- acs %>% drop_na(HDLC)
+mHDLC<- acs.HDLCcleanse %>% filter((sex=="Male"))
+fHDLC<- acs.HDLCcleanse %>% filter((sex=="Female"))
+tHDLC<- acs.HDLCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sHDLC<- acs.HDLCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.LDLCcleanse<- acs %>% drop_na(LDLC)
+mLDLC<- acs.LDLCcleanse %>% filter((sex=="Male"))
+fLDLC<- acs.LDLCcleanse %>% filter((sex=="Female"))
+tLDLC<- acs.LDLCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sLDLC<- acs.LDLCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.BMIcleanse<- acs %>% drop_na(BMI)
+mBMI<- acs.BMIcleanse %>% filter((sex=="Male"))
+fBMI<- acs.BMIcleanse %>% filter((sex=="Female"))
+tBMI<- acs.BMIcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sBMI<- acs.BMIcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+
+
+
+
+HumanRace<- matrix(c(mean(acs.TCcleanse$TC),mean(mTC$TC),mean(fTC$TC),mean(tTC$TC),mean(sTC$TC),mean(acs.TGcleanse$TG),mean(mTG$TG),mean(fTG$TG),mean(tTG$TG),mean(sTG$TG),mean(acs.HDLCcleanse$HDLC),mean(mHDLC$HDLC),mean(fHDLC$HDLC),mean(tHDLC$HDLC),mean(sHDLC$HDLC),mean(acs.LDLCcleanse$LDLC),mean(mLDLC$LDLC),mean(fLDLC$LDLC),mean(tLDLC$LDLC),mean(sLDLC$LDLC),mean(acs.BMIcleanse$BMI),mean(mBMI$BMI),mean(fBMI$BMI),mean(tBMI$BMI),mean(sBMI$BMI)), ncol=5)
+colnames(HumanRace)<-c('TC', 'TG', 'HDLC', 'LDLC', 'BMI')
+rownames(HumanRace)<-c('남녀전체','남','여', '평균이상','평균이하')
+HumanRace.table<-as.table(HumanRace)
+HumanRace.table
+
+PlotFaces(HumanRace.table, 1:5, fill = FALSE, nr=5, nc=5, scale = TRUE, byrow = FALSE, labels=c('남녀전체','남','여', '평균이상','평균이하'), col=hecru) 
+
+
+
+
+
+
+
+
+```
+
+## 결과
+키가 평균이하인 사람이 사회심리적인 스트레스로 담배를 더 피울 것이라는 가설은 기각되었다. 키가 평균 이상인 집단에서 흡연율이 더 높았다. BMI와 흡연율의 연관성은 찾을 수 없었다. 기타 그래프들은 해석하기에는 부족합이 있었다.흡연은 키와 연관성이 있어 보인다. 가설과는 반대로 키가 클수록 흡연을 하는 것으로 드러났다.
