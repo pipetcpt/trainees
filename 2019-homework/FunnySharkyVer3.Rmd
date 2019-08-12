@@ -1,0 +1,382 @@
+---
+title: "키와 흡연의 상관관계"
+output:
+  pdf_document: null
+  word_document: default
+latex_engine: xelatex
+html_notebook: default
+html_document: default
+mainfont: NanumGothic
+author: "윤창일"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 서론
+이 분석에서는 심장병을 앓고 있는 환자군에서 키와 흡연의 상관관계를 살펴본다. 키에서 오는 사회적 심리적 요인이 개인으로 하여금 흡연을 하도록 만드는지, 그것이 다시 심장병으로 연결되는지에 대한 개략적인 분석이다.
+
+가설 : 키는 흡연율에 유의한 영향을 준다.
+
+
+
+## 방법
+키와 흡연 : 비척도와 순위척도 > ggline(평균값과 sd scatter plot)
+BMI와 흡연 : 비척도와 순위척도 > boxplot
+키와 BMI : 비척도와 비척도 > scatterplot
+키-BMI-나이 : 비척도 > scatter 3D
+TC-TG-HDLC-LDLC-BMI : 비척도 > plotfaces
+
+
+
+plotfaces
+TC : styling of hair
+TG : width of faces
+HDLC : width of eyes
+LDLC : furve of smile
+BMI : width of mouth
+
+
+
+
+```{r}
+library(ggplot2)
+library(readxl)
+library(tidyverse)
+library(scales)
+library(dplyr)
+library(tinytex)
+library(plot3D)
+library(DescTools)
+
+setwd("C:/Users/cmc/Desktop/intern assignment/스트레스와 흡연율의 관계를 통한 키와 스트레스의 상관관계")
+acs <- read.csv("C:/Users/cmc/Desktop/intern assignment/acs.csv")
+
+
+##############################################################
+######whole data height distribution wtout NA##############
+acs.hcleanse<- acs %>% drop_na(height)
+
+ggplot(data=acs.hcleanse)+geom_bar(mapping=aes(x=height))
+macs<- acs.hcleanse %>% filter((sex=="Male"))
+facs<- acs.hcleanse %>% filter((sex=="Female"))
+
+
+##남녀로 구분한 키의 boxplot
+hmeans<-aggregate(height ~ sex, acs.hcleanse, mean)
+
+ggplot(data=acs.hcleanse)+geom_boxplot(aes(y=height , x=sex, fill=sex))+stat_summary(aes(sex,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = hmeans, aes(x=sex, label = height,  y = height - 1.2))
+
+
+
+
+############################################################
+#
+#본격 분석그래프 작성
+
+##divided data height distribution
+tacs<- acs.hcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sacs<- acs.hcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+##Never, Ex-smoker 순서 바꿔서 boxplot 그리기
+tacs$smoking2<-factor(tacs$smoking,levels=levels(tacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+sacs$smoking2<-factor(sacs$smoking,levels=levels(sacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+
+levels(tacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(sacs$smoking)<-c("Ex-smoker","Never","Smoker")
+
+thmeans<-aggregate(height ~ smoking2, tacs, mean)
+shmeans<-aggregate(height ~ smoking2, sacs, mean)
+
+ggplot(data=tacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = thmeans, aes(x=smoking2, label = height,  y = height - 1.2)) 
+ggplot(data=sacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = shmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+##이성간에 차이가 있는 것은 아닐까해서 성별로 나눈 비교
+macs$smoking2<-factor(macs$smoking,levels=levels(macs$smoking)<-c("Never","Ex-smoker","Smoker"))
+facs$smoking2<-factor(facs$smoking,levels=levels(facs$smoking)<-c("Never","Ex-smoker","Smoker"))
+mmeans<-aggregate(height ~ smoking2, macs, mean)
+fmeans<-aggregate(height ~ smoking2, facs, mean)
+
+ggplot(data=macs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = mmeans, aes(x=smoking2, label = height,  y = height - 1.2)) 
+ggplot(data=facs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = fmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+
+
+
+
+########################################################################
+##평균이상의 사람들을 성별로도 구분해서 그룹지어 다시 비교하기
+tmacs<- acs.hcleanse %>%  filter(height>=174 & sex=="Male")
+smacs<- acs.hcleanse %>%  filter(height<174 & sex=="Male")
+tfacs<- acs.hcleanse %>%  filter(height>=161 & sex=="Female")
+sfacs<- acs.hcleanse %>%  filter(height<161 & sex=="Female")
+
+levels(tmacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(smacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(tfacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(sfacs$smoking)<-c("Ex-smoker","Never","Smoker")
+
+tmacs$smoking2<-factor(tmacs$smoking,levels=levels(tmacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+smacs$smoking2<-factor(smacs$smoking,levels=levels(smacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+tfacs$smoking2<-factor(tfacs$smoking,levels=levels(tfacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+sfacs$smoking2<-factor(sfacs$smoking,levels=levels(sfacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+
+
+
+tmhmeans<-aggregate(height ~ smoking2, tmacs, mean)
+smhmeans<-aggregate(height ~ smoking2, smacs, mean)
+tfhmeans<-aggregate(height ~ smoking2, tfacs, mean)
+sfhmeans<-aggregate(height ~ smoking2, sfacs, mean)
+
+
+
+#1) 4군의 그래프 
+##ggplot(data=tmacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = tmhmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+library("ggpubr")
+ggline(tmacs, x = "smoking2", y = "height", 
+       add = c("mean_sd", "jitter"), 
+       order = c("Never", "Ex-smoker", "Smoker"),
+       ylab = "height", xlab = "smoking2")
+
+##ggplot(data=smacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = smhmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+
+library("ggpubr")
+ggline(smacs, x = "smoking2", y = "height", 
+       add = c("mean_sd", "jitter"), 
+       order = c("Never", "Ex-smoker", "Smoker"),
+       ylab = "height", xlab = "smoking2")
+
+##ggplot(data=tfacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = tfhmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+library("ggpubr")
+ggline(tfacs, x = "smoking2", y = "height", 
+       add = c("mean_sd", "jitter"), 
+       order = c("Never", "Ex-smoker", "Smoker"),
+       ylab = "height", xlab = "smoking2")
+
+
+##ggplot(data=sfacs)+geom_boxplot(mapping=aes(x=smoking2,y=height, fill=smoking2))+stat_summary(aes(smoking2,height), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = sfhmeans, aes(x=smoking2, label = height,  y = height - 1.2))
+
+library("ggpubr")
+ggline(sfacs, x = "smoking2", y = "height", 
+       add = c("mean_sd", "jitter"), 
+       order = c("Never", "Ex-smoker", "Smoker"),
+       ylab = "height", xlab = "smoking2")
+
+#2) 4군의 평균과 sd
+group_by(tmacs, smoking2) %>%
+  summarise(
+    count = n(),
+    mean = mean(height, na.rm = TRUE),
+    sd = sd(height, na.rm = TRUE)
+  )
+
+group_by(smacs, smoking2) %>%
+  summarise(
+    count = n(),
+    mean = mean(height, na.rm = TRUE),
+    sd = sd(height, na.rm = TRUE)
+  )
+
+group_by(tfacs, smoking2) %>%
+  summarise(
+    count = n(),
+    mean = mean(height, na.rm = TRUE),
+    sd = sd(height, na.rm = TRUE)
+  )
+
+group_by(sfacs, smoking2) %>%
+  summarise(
+    count = n(),
+    mean = mean(height, na.rm = TRUE),
+    sd = sd(height, na.rm = TRUE)
+  )
+
+#3) 4군의 p value
+
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = tmacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = smacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = tfacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = sfacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+#p value가 너무 크게 나와서 Ex-smoker 빼고 다시 p value 시도
+
+ntmacs<- acs.hcleanse %>%  filter(height>=174 & sex=="Male" & smoking!="Ex-smoker")
+nsmacs<- acs.hcleanse %>%  filter(height<174 & sex=="Male"& smoking!="Ex-smoker")
+ntfacs<- acs.hcleanse %>%  filter(height>=161 & sex=="Female"& smoking!="Ex-smoker")
+nsfacs<- acs.hcleanse %>%  filter(height<161 & sex=="Female"& smoking!="Ex-smoker")
+
+
+levels(ntmacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(nsmacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(ntfacs$smoking)<-c("Ex-smoker","Never","Smoker")
+levels(nsfacs$smoking)<-c("Ex-smoker","Never","Smoker")
+
+ntmacs$smoking2<-factor(ntmacs$smoking,levels=levels(ntmacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+nsmacs$smoking2<-factor(nsmacs$smoking,levels=levels(nsmacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+ntfacs$smoking2<-factor(ntfacs$smoking,levels=levels(ntfacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+nsfacs$smoking2<-factor(nsfacs$smoking,levels=levels(nsfacs$smoking)<-c("Never","Ex-smoker","Smoker"))
+
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = ntmacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = nsmacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = ntfacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+# Compute the analysis of variance
+res.aov <- aov(height ~ smoking2, data = nsfacs)
+# Summary of the analysis
+summary(res.aov)
+
+
+#결론
+#키가 평균을 넘는 사람과 평균을 넘지 않는 사람의 2 군으로 나누어 데이터를 그렸을 때, 남성의 키가 여성의 키를 큰 차이로 뛰어넘는 것으로 인해서 성별을 구분하지 않은 상황에서는 논리적인 결과를 도출할 데이터를 형성하지 못하는 것을 확인할 수 있었다. 
+
+#성별과 키의 평균의 두 가지 기준으로 전체 그룹을 4 군으로 나누었다. 평균곡선 그래프에서 시각적으로는 유의한 차이를 보일 것만 같았지만 비척도-순위척도의 평균 분석 방식인 one way-ANOVA 로 평균값을 비교하였을 때 통계적으로 유의한 차이를 보이지 않았다. 그러므로 키가 작을 수록 흡연율이 높을 것이라는 가설이 기각되었고, 키는 흡연율에 통계적으로 유의한 영향을 주지 않는 것으로 밝혀졌다.
+
+
+##################################APPENDIX################################학생인턴으로서 수행한 추가적인 작업으로, 위의 분석 주제와는 무관함.
+
+
+##남녀로 구분한 BMI의 boxplot
+acs.BMIcleanse<- acs %>% drop_na(BMI)
+Bmeans<-aggregate(BMI ~ sex, acs.BMIcleanse, mean)
+
+ggplot(data=acs.BMIcleanse)+geom_boxplot(mapping=aes(y=BMI , x=sex, fill=sex))+stat_summary(aes(sex,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = Bmeans, aes(x=sex, label = BMI,  y = BMI - 1.2))
+
+
+
+
+
+
+##BMI로 boxplot 그리기
+tBmeans<-aggregate(BMI ~ smoking2, tacs, mean)
+sBmeans<-aggregate(BMI ~ smoking2, sacs, mean)
+
+ggplot(data=tacs)+geom_boxplot(mapping=aes(x=smoking2,y=BMI, fill=smoking2)) +stat_summary(aes(smoking2,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = tBmeans, aes(x=smoking2, label = BMI,  y = BMI - 1.2))
+ggplot(data=facs)+geom_boxplot(mapping=aes(x=smoking2,y=BMI, fill=smoking2))+stat_summary(aes(smoking2,BMI), fun.y=mean, colour="darkred", geom="point",shape=18, size=3, show.legend = TRUE) + geom_text(data = sBmeans, aes(x=smoking2, label = BMI,  y = BMI - 1.2))
+
+
+
+
+
+
+
+##point와 smooth를 활용하여 키-BMI 그래프 그리기
+ggplot(data=macs, aes(BMI, height))+geom_point()+geom_smooth(method="auto")
+
+ggplot(data=facs, aes(BMI, height))+geom_point()+geom_smooth(method="auto")
+
+
+
+
+##scatter3D()를 활용해서 키 나이 BMI 를 비교한 그래프를 그리기
+##scatter3D(data=acs.cleanse, "age", "BMI", "height")
+acs.allcleanse<- acs %>% drop_na()
+
+scatter3D(x=acs.allcleanse$age, y=acs.allcleanse$BMI, z=acs.allcleanse$height, xlab="age",ylab="BMI",zlab="height")
+
+##hist3D()를 활용해서 그리기
+x_breaks <- seq(min(acs.allcleanse$age), max(acs.allcleanse$age), length.out = 100)
+y_breaks <- seq(min(acs.allcleanse$BMI), max(acs.allcleanse$BMI), length.out = 100)
+x_values <- 0.5*(x_breaks[-1]+x_breaks[-length(x_breaks)])
+y_values <- 0.5*(y_breaks[-1]+y_breaks[-length(y_breaks)])
+z_values <- table(cut(acs.allcleanse$age, x_breaks), cut(acs.allcleanse$BMI, y_breaks))
+
+hist3D(x=x_values, y=y_values, z=z_values, xlab="age",ylab="BMI",zlab="height", bty="g", ticktype="detailed", d=3)
+
+
+
+
+##멋있는 그래프로 마무리 plotfaces()
+##1)데이터 정제
+acs.TCcleanse<- acs %>% drop_na(TC)
+mTC<- acs.TCcleanse %>% filter((sex=="Male"))
+fTC<- acs.TCcleanse %>% filter((sex=="Female"))
+tTC<- acs.TCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sTC<- acs.TCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.TGcleanse<- acs %>% drop_na(TG)
+mTG<- acs.TGcleanse %>% filter((sex=="Male"))
+fTG<- acs.TGcleanse %>% filter((sex=="Female"))
+tTG<- acs.TGcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sTG<- acs.TGcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.HDLCcleanse<- acs %>% drop_na(HDLC)
+mHDLC<- acs.HDLCcleanse %>% filter((sex=="Male"))
+fHDLC<- acs.HDLCcleanse %>% filter((sex=="Female"))
+tHDLC<- acs.HDLCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sHDLC<- acs.HDLCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.LDLCcleanse<- acs %>% drop_na(LDLC)
+mLDLC<- acs.LDLCcleanse %>% filter((sex=="Male"))
+fLDLC<- acs.LDLCcleanse %>% filter((sex=="Female"))
+tLDLC<- acs.LDLCcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sLDLC<- acs.LDLCcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+acs.BMIcleanse<- acs %>% drop_na(BMI)
+mBMI<- acs.BMIcleanse %>% filter((sex=="Male"))
+fBMI<- acs.BMIcleanse %>% filter((sex=="Female"))
+tBMI<- acs.BMIcleanse %>%  filter((height>=174 & sex=="Male") | (height>=161 & sex=="Female"))
+sBMI<- acs.BMIcleanse %>%  filter((height<174 & sex=="Male") | (height<161 & sex=="Female"))
+
+
+
+
+
+HumanRace<- matrix(c(mean(acs.TCcleanse$TC),mean(mTC$TC),mean(fTC$TC),mean(tTC$TC),mean(sTC$TC),mean(acs.TGcleanse$TG),mean(mTG$TG),mean(fTG$TG),mean(tTG$TG),mean(sTG$TG),mean(acs.HDLCcleanse$HDLC),mean(mHDLC$HDLC),mean(fHDLC$HDLC),mean(tHDLC$HDLC),mean(sHDLC$HDLC),mean(acs.LDLCcleanse$LDLC),mean(mLDLC$LDLC),mean(fLDLC$LDLC),mean(tLDLC$LDLC),mean(sLDLC$LDLC),mean(acs.BMIcleanse$BMI),mean(mBMI$BMI),mean(fBMI$BMI),mean(tBMI$BMI),mean(sBMI$BMI)), ncol=5)
+colnames(HumanRace)<-c('TC', 'TG', 'HDLC', 'LDLC', 'BMI')
+rownames(HumanRace)<-c('남녀전체','남','여', '평균이상','평균이하')
+HumanRace.table<-as.table(HumanRace)
+HumanRace.table
+
+
+
+PlotFaces(HumanRace.table, 1:5, fill = FALSE, nr=5, nc=5, scale = TRUE, byrow = FALSE, labels=c('남녀전체','남','여', '평균이상','평균이하'), col=hecru) 
+
+
+
+
+
+
+
+
+```
