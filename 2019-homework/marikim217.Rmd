@@ -1,5 +1,5 @@
 ---
-title: "EF와 ACS 종류와의 상관관계"
+title: "EF와 ACS 와의 상관관계"
 author: "김마리"
 date: '2019 7 29 '
 output:
@@ -9,19 +9,28 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message=FALSE)
 ```
 
 ## 서론
-이 분석에서는 857명의 acute coronary syndrome 환자에서 Ejection fraction과 ACS type간의 상관관계가 있는지 알아보고자 한다.
 
-##방법
+이 분석에서는 857명의 acute coronary syndrome (ACS) 환자에서 Ejection fraction과 ACS type간의 상관관계가 있는지 알아보고자 한다. 
+
+김마리 선생님, 자료에 대해 더 서술해 보세요. ACS에 대한 자료를 더 찾아보시고 기술하면서 reference도 달아보세요.
+상관관계를 보려면 상관 분석(Correlation analysis)을 해야하는데 용어에 대해 한번 더 생각해 보세요.  https://ko.wikipedia.org/wiki/%EC%83%81%EA%B4%80_%EB%B6%84%EC%84%9D
+
+
+## 방법
+
 R studio로 자료 정리 및 통계 분석을 수행하였다.
 
-##결과
+사용한 패키지, 자료, 통계 방법 등을 자세히 서술해 보세요 ^^
 
-Ejection fraction과 ACS type 간에 유의미한 상관관계가 있었다.
+## 결과
 
+### 자료 탐색
+
+김마리 선생님, 여기에 탐색한 결과를 적어보세요.
 
 ```{r}
 library(tidyverse)
@@ -33,13 +42,30 @@ raw_acs <- read_excel("acs.xlsx") %>%
 raw_acs %>%
   group_by(Dx) %>%
   summarise(median_EF = median(EF, na.rm=TRUE), 
-            sd_EF = sd(EF, na.rm=TRUE))
+            sd_EF = sd(EF, na.rm=TRUE)) # mean, sd, median, min, max, 1st, 3rd quartile 등을 구해보세요.
 ```
 
 ```{r}
-qplot(x=Dx, y=EF, data=raw_acs, geom='boxplot')
+qplot(x=Dx, y=EF, data=raw_acs, geom='boxplot') # boxplot 위에 scatter plot을 jitter 해서 그려보세요.
+# scatter plot을 jitter 해서 그려보세요.
 ```
 
-##결론
+### ANOVA 통계분석
+
+김마리 선생님, 여기에 통계분석한 결과를 적어보세요.
+Ejection fraction은 ACS type 별로 통계적으로 의미있는 차이가 있었다.
+
+```{r}
+acs_anova <- aov(EF ~ Dx, data = acs)
+summary(acs_anova)
+TukeyHSD(acs_anova)
+```
+
+## 결론
 ACS 환자들의 Ejection fraction과 ACS type는 관련이 있다.  
 
+## 참고문헌
+
+1. 참고문헌1
+1. 참고문헌2
+1. 참고문헌3
