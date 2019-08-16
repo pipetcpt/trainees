@@ -1,36 +1,29 @@
 ---
-title: "EF와 ACS 와의 상관관계"
+title: "EF와 ACS 종류와의 상관관계"
 author: "김마리"
-date: '2019 7 29 '
-output:
-  pdf_document: default
-  html_document:
-    df_print: paged
+date: '2019 8 16 '
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message=FALSE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 ```
 
 ## 서론
-
 이 분석에서는 857명의 acute coronary syndrome (ACS) 환자에서 Ejection fraction과 ACS type간의 상관관계가 있는지 알아보고자 한다. 
 
-김마리 선생님, 자료에 대해 더 서술해 보세요. ACS에 대한 자료를 더 찾아보시고 기술하면서 reference도 달아보세요.
-상관관계를 보려면 상관 분석(Correlation analysis)을 해야하는데 용어에 대해 한번 더 생각해 보세요.  https://ko.wikipedia.org/wiki/%EC%83%81%EA%B4%80_%EB%B6%84%EC%84%9D
+ACS는 관상동맥이 혈전에 의해 70% 이상 막힌 상태로, 심근의 일부가 괴사되는 경우가 myocardial infarction이고, 괴사되지는 않지만 혈관 내 혈액의 흐름이 원활하지 않아 가슴에 통증이 생기는 것이 unstable angina 이다. Myocardial infarction은 Electrocardiogram(ECG)에서 ST elevation 유무에 따라 non-ST elevation MI(NSTEMI)와 ST elevation MI(STEMI)로 나뉜다.
+
+분산분석(analysis of variance, ANOVA)는 두 개 이상의 집단을 비교하고자 할 때 집단 내의 분산, 총 평균과 각 집단의 평균의 차이에 의해 생긴 집단 간 분산의 비교를 통해 만들어진 F분포를 이용하여 가설 검정을 하는 방법이다. 일원분산분석(One-way ANOVA)는 측정하고자 하는 값에 영향을 미치는 요인(factor)이 1개인 경우 수행하며, 이원분산분석(two-way ANOVA)는 측정값에 영향을 미치는 요인(factor)이 2개인 경우 수행한다.  
 
 
 ## 방법
-
-R studio로 자료 정리 및 통계 분석을 수행하였다.
-
-사용한 패키지, 자료, 통계 방법 등을 자세히 서술해 보세요 ^^
-
+Rstudio로 자료 정리 및 통계분석을 수행하였다. tidyverse 와 readxl 패키지를 사용하여 ACS type에 따른 EF의 boxplot 을 그리고 one-way ANOVA를 수행하여 ACS 환자 그룹별 EF의 평균에 유의한 차이가 있는지 알아보았다. 
+ 
+ 
 ## 결과
 
-### 자료 탐색
-
-김마리 선생님, 여기에 탐색한 결과를 적어보세요.
+### 자료탐색
 
 ```{r}
 library(tidyverse)
@@ -41,31 +34,54 @@ raw_acs <- read_excel("acs.xlsx") %>%
 
 raw_acs %>%
   group_by(Dx) %>%
-  summarise(median_EF = median(EF, na.rm=TRUE), 
-            sd_EF = sd(EF, na.rm=TRUE)) # mean, sd, median, min, max, 1st, 3rd quartile 등을 구해보세요.
+  summarise(mean_EF = mean(EF, na.rm=TRUE), 
+            sd_EF = sd(EF, na.rm=TRUE), median_EF=median(EF, na.rm=TRUE), min_EF=min(EF, na.rm=TRUE), max_EF=max(EF, na.rm=TRUE), quantile1_EF=quantile(EF, probs=c(0.25), na.rm=TRUE), quantile3_EF=quantile(EF, probs=c(0.75), na.rm=TRUE))
 ```
 
 ```{r}
-qplot(x=Dx, y=EF, data=raw_acs, geom='boxplot') # boxplot 위에 scatter plot을 jitter 해서 그려보세요.
-# scatter plot을 jitter 해서 그려보세요.
+qplot(Dx, EF, data=raw_acs, geom=c("boxplot", "jitter"), fill=Dx)
+
+```
+
+```{r}
+qplot(Dx, EF, data=raw_acs, geom=c("dotplot"), stackdir="center", binaxis="y", binwidth=1)
+```
+
+```{r}
+qplot(Dx, EF, data=raw_acs, geom=c("violin"), trim=FALSE)
+
 ```
 
 ### ANOVA 통계분석
 
-김마리 선생님, 여기에 통계분석한 결과를 적어보세요.
 Ejection fraction은 ACS type 별로 통계적으로 의미있는 차이가 있었다.
 
+
 ```{r}
-acs_anova <- aov(EF ~ Dx, data = acs)
-summary(acs_anova)
+acs_anova=aov(EF~Dx, data=raw_acs)
+summary(acs_anova) 
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(acs_anova)
+```
+
+```{r}
+bartlett.test(EF~Dx, data=raw_acs)
+```
+
+```{r}
 TukeyHSD(acs_anova)
+
 ```
 
 ## 결론
 ACS 환자들의 Ejection fraction과 ACS type는 관련이 있다.  
 
+
 ## 참고문헌
 
-1. 참고문헌1
-1. 참고문헌2
-1. 참고문헌3
+1."wikipedia", 2018년 5월 22일 수정, 2019년 8월 16일 접속, https://ko.wikipedia.org/wiki/%EC%8B%AC%EA%B7%BC_%EA%B2%BD%EC%83%89
+
+2. "wikipedia", 2019년 8월 4일 수정, 2019년 8월 16일 접속, https://ko.wikipedia.org/wiki/%EB%B6%84%EC%82%B0_%EB%B6%84%EC%84%9D
