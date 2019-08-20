@@ -39,7 +39,8 @@ raw_acs %>%
 ```
 
 ```{r}
-qplot(Dx, EF, data=raw_acs, geom=c("boxplot", "jitter"), fill=Dx)
+raw_acs$Dx <- factor(raw_acs$Dx, levels=c("Unstable Angina", "NSTEMI", "STEMI"))
+qplot(Dx, EF, data=raw_acs, geom=c("boxplot", "jitter"), fill=Dx, outlier.size=0)
 
 ```
 
@@ -77,7 +78,7 @@ TukeyHSD(acs_anova)
 ```
 
 ## 결론
-ACS 환자들의 Ejection fraction과 ACS type는 관련이 있다.  
+ACS 환자들의 Ejection fraction은 ACS type에 따라 통계적으로 유의미한 차이가 있다. Unstable Angina, NSTEMI, STEMI 순서로 EF의 평균이 감소하며, 다중비교로 두 그룹씩 비교한 결과 세 그룹의 평균이 모두 서로 차이가 있었다.  
 
 
 ## 참고문헌
