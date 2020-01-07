@@ -28,9 +28,9 @@
 - Intern Program 2019-Summer
     - `2019-07-15 - 2019-08-31`
     - Participants
-        * 윤창일 - 가톨릭 의대 2학년
-        * 김마리 - 중앙대 약대 3학년
+        * [윤창일 funnysharky](https://github.com/funnysharky) - 가톨릭 의대 2학년
+        * [김마리 marikim217](https://github.com/marikim217) - 중앙대 약대 3학년
 - Intern Program 2020-Winter
     - `2019-12-23 - present`
     - Participants
-        * 최명기 - 중앙대 약대 4학년
+        * [최명기 mante111](https://github.com/mante111) - 중앙대 약대 4학년
