@@ -15,7 +15,7 @@ ggplot(PK_data, aes(x = TIME, y = DV)) +
   facet_wrap(.~ ID) +
   labs(x = "Time", y = "concentration", title = "PK_ID")
 
-ggplot(PK_data, aes(x = TIME, y = DV)) + 
+ggplot(PK_data, aes(x = TIME, y = DV,  group = ID, color = ID)) + 
   geom_line() + 
   facet_wrap(.~ GENE) +
-  labs(x = "Time", y = "concentration", title = "PK_ID")
+  labs(x = "Time", y = "concentration", title = "PK_GENE")
