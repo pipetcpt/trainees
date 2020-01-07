@@ -25,12 +25,12 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
-## Intern Program 2019-Summer
-
-`2019-07-15 - 2019-08-31`
-
-### Participants
-
-* 윤창일 - 가톨릭 의대 2학년
-* 김마리 - 중앙대 약대 1학년 
-
+- Intern Program 2019-Summer
+    - `2019-07-15 - 2019-08-31`
+    - Participants
+        * 윤창일 - 가톨릭 의대 2학년
+        * 김마리 - 중앙대 약대 3학년
+- Intern Program 2020-Winter
+    - `2019-12-23 - present`
+    - Participants
+        * 최명기 - 중앙대 약대 4학년
