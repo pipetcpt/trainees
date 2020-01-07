@@ -1,0 +1,58 @@
+---
+title: "NCA 결과 보고서"
+author: "최명기"
+date: '2020 1 7 '
+output: html_document
+---
+
+### PK data추출 및 PK Plotting
+* ##### PK data 추출
+```{r}
+PK_data <- read_excel("Drug_X_PK.xlsx") %>% as.data.frame() %>% mutate(ID = as.factor(ID))
+```
+* ##### 전체 PK 그래프
+```{r}
+ggplot(PK_data, aes(x = TIME, y = DV, group = ID, color = ID)) + 
+  geom_line() + 
+  labs(x = "Time", y = "concentration", title = "PK")
+```
+* ##### ID별 PK그래프
+```{r}
+ggplot(PK_data, aes(x = TIME, y = DV)) + 
+  geom_line() + 
+  facet_wrap(.~ ID) +
+  labs(x = "Time", y = "concentration", title = "PK_ID")
+```
+* ##### GENE별 PK 그래프
+```{r}
+ggplot(PK_data, aes(x = TIME, y = DV)) + 
+  geom_line() + 
+  facet_wrap(.~ GENE) +
+  labs(x = "Time", y = "concentration", title = "PK_ID")
+```
+
+
+### NCA 분석
+* ID별 Dose가 달라 Dose data 추출과정 필요
+```{r}
+PK <- PK_data %>% select(ID, Drug) %>% distinct()
+Dose <- PK$Drug
+
+NCA <- NonCompart::tblNCA(PK_data, "ID", "TIME", "DV", dose = Dose, doseUnit = "mg", timeUnit = "h", concUnit = "ug/L", R2ADJ = 0.01)
+```
+
+### ANOVA test
+* GENE에 따른 Cmax와 AUClast의 변화 양상을 ANOVA test로 확인
+```{r}
+GENE_data <- PK_data %>% select(ID, GENE) %>% distinct()
+stat <- left_join(NCA, GENE_data)
+stat
+
+oneway.test(CMAX ~ GENE, stat, var.equal = T)
+oneway.test(AUCLST ~ GENE, stat, var.equal = T)
+```
+### ANOVAtest결과 
+* P-Value(Cmax) = 0.187
+* P-value(AUClast) = 0.1836
+    
+    
