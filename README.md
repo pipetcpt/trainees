@@ -7,6 +7,7 @@
 
 - [Github](https://github.com)에 계정을 만듭니다.
 - 그 후 아이디를 알려주세요.
+- 이 저장소를 Watch / Star 해주세요.
 
 # 일정
 
@@ -34,3 +35,4 @@
     - `2019-12-23 - present`
     - Participants
         * [최명기 mante111](https://github.com/mante111) - 중앙대 약대 4학년
+        * [김경민 amor87621](https://github.com/amor87621) - 가톨릭 의대 4학년
