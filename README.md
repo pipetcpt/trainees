@@ -1,7 +1,7 @@
 # Interns of PIPET 
 
-> 이곳은 PIPET 인턴을 위해 사용되는 저장소입니다.  
-> This repository is used for teaching subinterns (students).
+> 이곳은 PIPET 수련생들을 위해 사용되는 저장소입니다.  
+> This repository is used for teaching trainees (residents, subinterns, or students).
 
 # 오자마자 여러분이 해야할 일
 
@@ -11,7 +11,6 @@
 
 # 일정
 
-이 프로그램은 기본적으로 2주간의 일정으로 진행되나 변동 가능합니다. 
 이 저장소의 자료를 통해서 다음과 같은 지식을 습득합니다.
 
 * [Github](https://github.com)
