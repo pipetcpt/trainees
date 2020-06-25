@@ -3,7 +3,11 @@
 NDA’s & R
 Review clin/pharm sections of NDA’s with R graphics/analyses
 R in Clin pharm for nonlinear mixed effects modeling and subsequent graphical analysis
-https://www.accessdata.fda.gov/drugsatfda_docs/nda/2016/208573Orig1s000ClinPharmR.pdf
+- https://www.accessdata.fda.gov/drugsatfda_docs/nda/2016/208573Orig1s000ClinPharmR.pdf
+NDA 자료인데 R로 만든 regression 그림 등이 잘 표시되어 있다.
+
+
+
 https://www.accessdata.fda.gov/drugsatfda_docs/nda/2017/209296Orig1s000ClinPharmR.pdf
 https://channel9.msdn.com/Events/useR-international-R-User-conference/useR2016/Using-R-in-a-regulatory-environment-FDA-experiences
 https://uupharmacometrics.github.io/xpose/
