@@ -1,0 +1,14 @@
+
+
+NDA’s & R
+Review clin/pharm sections of NDA’s with R graphics/analyses
+R in Clin pharm for nonlinear mixed effects modeling and subsequent graphical analysis
+https://www.accessdata.fda.gov/drugsatfda_docs/nda/2016/208573Orig1s000ClinPharmR.pdf
+https://www.accessdata.fda.gov/drugsatfda_docs/nda/2017/209296Orig1s000ClinPharmR.pdf
+https://channel9.msdn.com/Events/useR-international-R-User-conference/useR2016/Using-R-in-a-regulatory-environment-FDA-experiences
+https://uupharmacometrics.github.io/xpose/
+https://cran.r-project.org/web/views/ClinicalTrials.html
+https://www.r-project.org/doc/R-FDA.pdf
+https://github.com/andyofsmeg/RValidation
+http://washstat.org/presentations/20181024/Schuette.pdf
+The Role of R in Drug Discovery, Research, and Development https://rstudio.com/resources/webinars/the-role-of-r-in-drug-discovery-research-and-development/
