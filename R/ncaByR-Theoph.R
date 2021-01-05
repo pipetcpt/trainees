@@ -15,7 +15,6 @@ write.csv(ncaTheoph, 'data/ncaTheoph.csv', row.names = FALSE)
 # OBjective 2. Wide format table -> Long format table
 
 ncaTheophLong <- ncaTheoph %>%
-  as.tibble() %>% 
   arrange(Subject) %>% 
   gather(key = 'PKparameter', value = 'PKparameterValue', b0:CLFP)
 
