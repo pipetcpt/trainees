@@ -1,6 +1,6 @@
 # Interns of PIPET 
 
-> 이곳은 PIPET 수련생들을 위해 사용되는 저장소입니다.  
+> 이곳은 PIPET 수련생들 및 가톨릭의대 학생들을 위해 사용되는 저장소입니다.  
 > This repository is used for teaching trainees (residents, subinterns, or students).
 
 # 오자마자 여러분이 해야할 일
