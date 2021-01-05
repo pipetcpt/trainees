@@ -25,6 +25,16 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
+- Med student 2020-Elective
+    - `2020-11 - 2021-01`
+    - Participants
+        * 유선아
+        * 김동연
+        * 원유석
+        * 송현선
+        * 김지완
+        * 안건희
+        * 함승열
 - Intern Program 2019-Summer
     - `2019-07-15 - 2019-08-31`
     - Participants
