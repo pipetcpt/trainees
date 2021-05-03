@@ -25,6 +25,10 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
+- Med student 2021-Elective
+    - `2021-05 - 2021-06`
+    - Participant
+        * [송지수](@SongJS96)
 - Med student 2020-Elective
     - `2020-11 - 2021-01`
     - Participants
