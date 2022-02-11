@@ -25,6 +25,11 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
+- Pre-med students 2022-Elective
+    - `2022-02` 
+    - Participants 
+        * [박지민 parkjimin93](@parkjimin93)
+        * [박상우 swpark0416](@swpark0416)
 - Med student 2021-Elective
     - `2021-05 - 2021-06`
     - Participant
