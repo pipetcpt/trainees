@@ -25,6 +25,9 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
+- High school intern 2022-12
+    - Participants
+        * [한준규 PaulHan2006](@PaulHan2006)
 - Pre-med students 2022-Elective
     - `2022-02` 
     - Participants 
