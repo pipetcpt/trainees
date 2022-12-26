@@ -27,16 +27,16 @@
 
 - High school intern 2022-12
     - Participants
-        * [한준규 PaulHan2006](@PaulHan2006)
+        * [한준규 PaulHan2006](https://github.com/PaulHan2006)
 - Pre-med students 2022-Elective
     - `2022-02` 
     - Participants 
-        * [박지민 parkjimin93](@parkjimin93)
-        * [박상우 swpark0416](@swpark0416)
+        * [박지민 parkjimin93](https://github.com/parkjimin93)
+        * [박상우 swpark0416](https://github.com/swpark0416)
 - Med student 2021-Elective
     - `2021-05 - 2021-06`
     - Participant
-        * [송지수 SongJS96](@SongJS96) - 건양대 의대 4학년
+        * [송지수 SongJS96](https://github.com/SongJS96) - 건양대 의대 4학년
 - Med student 2020-Elective
     - `2020-11 - 2021-01`
     - Participants
