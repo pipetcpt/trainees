@@ -25,6 +25,9 @@
 
 마지막에 논문 발표를 하게 됩니다.
 
+- 4학년 선택 실습 2024-03
+    - `2024/3/11(월)부터 2024/4/6(토)까지 4주간`
+    - 윤준섭, 이승현 
 - High school intern 2022-12
     - Participants
         * [한준규 PaulHan2006](https://github.com/PaulHan2006)
