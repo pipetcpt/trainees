@@ -27,7 +27,11 @@
 
 - 4학년 선택 실습 2024-03
     - `2024/3/11(월)부터 2024/4/6(토)까지 4주간`
-    - 윤준섭, 이승현 
+    - Participants
+        * [박현수 KINDASOO](https://github.com/KINDASOO)
+        * [김현욱 andrew8321](https://github.com/andrew8321)
+        * [강라현 rahyeon](https://github.com/rahyeon)
+        * [이현도 crm05078](https://github.com/crm05078)
 - High school intern 2022-12
     - Participants
         * [한준규 PaulHan2006](https://github.com/PaulHan2006)
